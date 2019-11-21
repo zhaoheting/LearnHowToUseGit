@@ -5,17 +5,25 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.server.ConfigurableWebServerFactory;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.http.HttpStatus;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootApplication
+@ImportResource("/integration/integration.xml")
 public class LearnHowToUserGitApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(LearnHowToUserGitApplication.class, args);
+    public static void main(String[] args) throws IOException {
+//        SpringApplication.run(LearnHowToUserGitApplication.class, args);
+        ConfigurableApplicationContext ctx = new SpringApplication(LearnHowToUserGitApplication.class).run(args);
+        System.out.println("Hit Enter to terminate");
+        System.in.read();
+        ctx.close();
     }
 
     /**
