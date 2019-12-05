@@ -30,7 +30,6 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compile("org.springframework.boot:spring-boot-starter")
 	compile("org.springframework.boot:spring-boot-starter-data-redis")
 	compile("org.slf4j:jul-to-slf4j")
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
