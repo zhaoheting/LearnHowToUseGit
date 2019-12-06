@@ -1,6 +1,6 @@
 package com.example.LearnHowToUserGit.controllers;
 
-import com.example.LearnHowToUserGit.redis.RedisUtils;
+import com.example.LearnHowToUserGit.dao.CacheAccessUtilsRedisImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestControllers {
 
     @Autowired
-    private RedisUtils redisUtils;
+    private CacheAccessUtilsRedisImpl redisUtils;
 
     @RequestMapping("/test")
     public String test() {

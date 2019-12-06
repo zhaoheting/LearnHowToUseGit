@@ -1,4 +1,4 @@
-package com.example.LearnHowToUserGit.redis;
+package com.example.LearnHowToUserGit.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @SuppressWarnings("unchecked")
-public class RedisUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RedisUtils.class);
+public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CacheAccessUtilsRedisImpl.class);
 
     @Autowired
     RedisTemplate redisTemplate;
