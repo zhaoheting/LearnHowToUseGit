@@ -1,21 +1,26 @@
 package com.example.LearnHowToUserGit.services;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 
 @Service
+@ConfigurationProperties(prefix = "spring.redis")
 public class RedisConfigService {
 
-    private int redisRefreshInterval;
+    private int redisRefreshInterval = 60;
 
-    private boolean dynamicRefreshRedisSources;
+    private boolean dynamicRefreshRedisSources = true;
 
-    private boolean validateRedisClusterMembership;
+    private boolean validateRedisClusterMembership = true;
 
-    private String RedisClusterPassword;
+    private String RedisClusterPassword = "";
 
+    @Value("#{T(java.util.Arrays).asList('${spring.redis.cluster.nodes}')}")
     private List<String> redisClusterNodes;
 
     /**

@@ -11,14 +11,16 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.stereotype.Component;
 
 @Configuration("CacheConfiguration")
 @Profile("RedisStandalone")
-public abstract class RedisConfig implements CacheConfiguration{
+public class RedisConfig implements CacheConfiguration{
 
     @Autowired
     RedisConnectionFactory redisConnectionFactory;
 
+    @Override
     public RedisConnectionFactory redisConnectionFactory(){
          return this.redisConnectionFactory;
      }

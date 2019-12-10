@@ -1,9 +1,8 @@
 package com.example.LearnHowToUserGit.dao;
 
+import com.example.LearnHowToUserGit.config.CacheConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -13,12 +12,14 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@SuppressWarnings("unchecked")
+@SuppressWarnings("all")
 public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheAccessUtilsRedisImpl.class);
+    private CacheConfiguration cacheConfiguration;
 
-    @Autowired
-    RedisTemplate redisTemplate;
+    public CacheAccessUtilsRedisImpl(CacheConfiguration cacheConfiguration){
+        this.cacheConfiguration = cacheConfiguration;
+    }
 
 // =============================common============================
     /**
@@ -31,7 +32,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
     public Boolean setExpireTime(String key, long time) {
         boolean bool;
         if (time > 0) {
-            bool = redisTemplate.expire(key, time, TimeUnit.SECONDS);
+            bool = cacheConfiguration.getRedisTemplate().expire(key, time, TimeUnit.SECONDS);
         } else {
             LOGGER.error("The expire time must be positive.");
             bool = false;
@@ -46,7 +47,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Long getExpire(String key) {
-        return redisTemplate.getExpire(key, TimeUnit.SECONDS);
+        return cacheConfiguration.getRedisTemplate().getExpire(key, TimeUnit.SECONDS);
     }
 
     /**
@@ -56,7 +57,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Boolean hasKey(String key) {
-        return redisTemplate.hasKey(key);
+        return cacheConfiguration.getRedisTemplate().hasKey(key);
     }
 
     /**
@@ -67,9 +68,9 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
     public void del(String... keys) {
         if (keys != null && keys.length > 0) {
             if (keys.length == 1) {
-                redisTemplate.delete(keys[0]);
+                cacheConfiguration.getRedisTemplate().delete(keys[0]);
             } else {
-                redisTemplate.delete(CollectionUtils.arrayToList(keys));
+                cacheConfiguration.getRedisTemplate().delete(CollectionUtils.arrayToList(keys));
             }
         }
     }
@@ -82,7 +83,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Object get(String key) {
-        return key == null ? null : redisTemplate.opsForValue().get(key);
+        return key == null ? null : cacheConfiguration.getRedisTemplate().opsForValue().get(key);
     }
 
     /**
@@ -94,7 +95,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      */
     public boolean set(String key, Object value) {
         try {
-            redisTemplate.opsForValue().set(key, value);
+            cacheConfiguration.getRedisTemplate().opsForValue().set(key, value);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,7 +114,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
     public boolean set(String key, Object value, long time) {
         try {
             if (time > 0) {
-                redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
+                cacheConfiguration.getRedisTemplate().opsForValue().set(key, value, time, TimeUnit.SECONDS);
                 return true;
             } else {
                 LOGGER.error("Expiration time must be positive.");
@@ -136,7 +137,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
         if (delta < 0) {
             throw new RuntimeException("The delta must be positive.");
         }
-        return redisTemplate.opsForValue().increment(key, delta);
+        return cacheConfiguration.getRedisTemplate().opsForValue().increment(key, delta);
     }
 
     /**
@@ -150,7 +151,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
         if (delta < 0) {
             throw new RuntimeException("The delta must be negative.");
         }
-        return redisTemplate.opsForValue().increment(key, -delta);
+        return cacheConfiguration.getRedisTemplate().opsForValue().increment(key, -delta);
     }
 
     // ================================Map=================================
@@ -161,7 +162,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Object hashGet(String key, String hashKey) {
-        return redisTemplate.opsForHash().get(key, hashKey);
+        return cacheConfiguration.getRedisTemplate().opsForHash().get(key, hashKey);
     }
 
     /**
@@ -171,7 +172,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return 对应的多个键值
      */
     public Map<Object, Object> hashMapGet(String key) {
-        return redisTemplate.opsForHash().entries(key);
+        return cacheConfiguration.getRedisTemplate().opsForHash().entries(key);
     }
 
     /**
@@ -183,7 +184,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      */
     public boolean hashMapSet(String key, Map<String, Object> map) {
         try {
-            redisTemplate.opsForHash().putAll(key, map);
+            cacheConfiguration.getRedisTemplate().opsForHash().putAll(key, map);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -201,7 +202,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      */
     public boolean hashMapSet(String key, Map<String, Object> map, long time) {
         try {
-            redisTemplate.opsForHash().putAll(key, map);
+            cacheConfiguration.getRedisTemplate().opsForHash().putAll(key, map);
             if (time > 0) {
                 setExpireTime(key, time);
             }
@@ -222,7 +223,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      */
     public boolean hashValueSet(String key, String hashKey, Object value) {
         try {
-            redisTemplate.opsForHash().put(key, hashKey, value);
+            cacheConfiguration.getRedisTemplate().opsForHash().put(key, hashKey, value);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,7 +242,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      */
     public boolean hashValueSet(String key, String item, Object value, long time) {
         try {
-            redisTemplate.opsForHash().put(key, item, value);
+            cacheConfiguration.getRedisTemplate().opsForHash().put(key, item, value);
             if (time > 0) {
                 setExpireTime(key, time);
             }
@@ -259,7 +260,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @param hashKeys One or more than one key that included in the map named {@code key}.
      */
     public void hashDelete(String key, Object... hashKeys) {
-        redisTemplate.opsForHash().delete(key, hashKeys);
+        cacheConfiguration.getRedisTemplate().opsForHash().delete(key, hashKeys);
     }
 
     /**
@@ -270,7 +271,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public boolean hasHashKey(String key, String hashKey) {
-        return redisTemplate.opsForHash().hasKey(key, hashKey);
+        return cacheConfiguration.getRedisTemplate().opsForHash().hasKey(key, hashKey);
     }
 
     /**
@@ -282,7 +283,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public double hashIncr(String key, String hashKey, double increment) {
-        return redisTemplate.opsForHash().increment(key, hashKey, increment);
+        return cacheConfiguration.getRedisTemplate().opsForHash().increment(key, hashKey, increment);
     }
 
     /**
@@ -294,7 +295,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public double hashDecr(String key, String hashKey, double decrement) {
-        return redisTemplate.opsForHash().increment(key, hashKey, -decrement);
+        return cacheConfiguration.getRedisTemplate().opsForHash().increment(key, hashKey, -decrement);
     }
 
     // ============================set=============================
@@ -306,7 +307,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Set<Object> getSet(String key) {
-        return redisTemplate.opsForSet().members(key);
+        return cacheConfiguration.getRedisTemplate().opsForSet().members(key);
     }
 
     /**
@@ -317,7 +318,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Boolean isSetMember(String key, Object value) {
-        return redisTemplate.opsForSet().isMember(key, value);
+        return cacheConfiguration.getRedisTemplate().opsForSet().isMember(key, value);
     }
 
     /**
@@ -328,7 +329,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Long addToSet(String key, Object... values) {
-        return redisTemplate.opsForSet().add(key, values);
+        return cacheConfiguration.getRedisTemplate().opsForSet().add(key, values);
     }
 
     /**
@@ -340,7 +341,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Long addToSetWithTime(String key, long time, Object... values) {
-        Long count = redisTemplate.opsForSet().add(key, values);
+        Long count = cacheConfiguration.getRedisTemplate().opsForSet().add(key, values);
         if (time > 0) {
             boolean hasExpirationTime = setExpireTime(key, time);
             if (hasExpirationTime) {
@@ -361,7 +362,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return The size of the set.
      */
     public Long getSetSize(String key) {
-        return redisTemplate.opsForSet().size(key);
+        return cacheConfiguration.getRedisTemplate().opsForSet().size(key);
     }
 
     /**
@@ -372,7 +373,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return the amount of the removed elements.
      */
     public Long removeFromSet(String key, Object... values) {
-        return redisTemplate.opsForSet().remove(key, values);
+        return cacheConfiguration.getRedisTemplate().opsForSet().remove(key, values);
     }
 
     // ===============================list=================================
@@ -386,7 +387,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return The partial list.
      */
     public List<Object> getList(String key, long start, long end) {
-        return redisTemplate.opsForList().range(key, start, end);
+        return cacheConfiguration.getRedisTemplate().opsForList().range(key, start, end);
     }
 
     /**
@@ -396,7 +397,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Long getListSize(String key) {
-        return redisTemplate.opsForList().size(key);
+        return cacheConfiguration.getRedisTemplate().opsForList().size(key);
     }
 
     /**
@@ -407,7 +408,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Object getListNode(String key, long index) {
-        return redisTemplate.opsForList().index(key, index);
+        return cacheConfiguration.getRedisTemplate().opsForList().index(key, index);
     }
 
     /**
@@ -418,7 +419,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Long appendToList(String key, Object value) {
-        return redisTemplate.opsForList().rightPush(key, value);
+        return cacheConfiguration.getRedisTemplate().opsForList().rightPush(key, value);
     }
 
     /**
@@ -430,7 +431,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Long appendToListWithTime(String key, Object value, long time) {
-        Long index = redisTemplate.opsForList().rightPush(key, value);
+        Long index = cacheConfiguration.getRedisTemplate().opsForList().rightPush(key, value);
         if (time > 0) {
             boolean hasExpirationTime = setExpireTime(key, time);
             if (hasExpirationTime) {
@@ -452,7 +453,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Long appendList(String key, List<Object> list) {
-        return redisTemplate.opsForList().rightPushAll(key, list);
+        return cacheConfiguration.getRedisTemplate().opsForList().rightPushAll(key, list);
     }
 
     /**
@@ -464,7 +465,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Long appendListWithTime(String key, List<Object> list, long time) {
-        Long count = redisTemplate.opsForList().rightPushAll(key, list);
+        Long count = cacheConfiguration.getRedisTemplate().opsForList().rightPushAll(key, list);
         if (time > 0) {
             boolean hasExpirationTime = setExpireTime(key, time);
             if (hasExpirationTime) {
@@ -487,7 +488,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public void setListValue(String key, long index, Object value) {
-        redisTemplate.opsForList().set(key, index, value);
+        cacheConfiguration.getRedisTemplate().opsForList().set(key, index, value);
     }
 
     /**
@@ -499,6 +500,6 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @return
      */
     public Long lRemove(String key, long count, Object value) {
-        return redisTemplate.opsForList().remove(key, count, value);
+        return cacheConfiguration.getRedisTemplate().opsForList().remove(key, count, value);
     }
 }

@@ -32,7 +32,7 @@ public interface CacheConfiguration {
      */
     @Bean
     @SuppressWarnings("all")
-    default RedisTemplate<String,Object> redisTemplate(){
+    default RedisTemplate<String,Object> getRedisTemplate(){
         RedisTemplate<String,Object> redisTemplate = new RedisTemplate<String,Object>();
         RedisConnectionFactory factory = redisConnectionFactory();
         redisTemplate.setConnectionFactory(factory);
