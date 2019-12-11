@@ -1,27 +1,29 @@
 buildscript {
-	ext{
+	ext {
 		springBootVersion = '2.0.2.RELEASE'
 		springCloudVersion = 'Finchley.SR3'
 	}
 	repositories {
+		jcenter()
 		mavenCentral()
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE")
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
 	}
 }
 
-plugins {
-	id 'org.springframework.boot' version '2.2.0.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-	id 'java'
-}
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
-
+targetCompatibility = 1.8
 repositories {
+	jcenter()
 	mavenCentral()
 }
 
@@ -29,6 +31,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2'
 	implementation 'mysql:mysql-connector-java'
+	compile("org.springframework.boot:spring-boot-starter-data-redis")
+	compile("org.slf4j:jul-to-slf4j")
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
@@ -40,6 +44,11 @@ dependencyManagement {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
+bootJar {
+	baseName = 'LearnHowToUserGit-gradle'
+	version = '0.1.0'
+}
+
 test {
 	useJUnitPlatform()
 }
