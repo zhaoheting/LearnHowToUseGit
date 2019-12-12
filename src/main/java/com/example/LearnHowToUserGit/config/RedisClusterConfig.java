@@ -27,25 +27,26 @@ public class RedisClusterConfig implements CacheConfiguration {
     @Bean
     @Override
     public RedisConnectionFactory redisConnectionFactory() {
-        int refreshInterval = redisConfigService.getRefreshInterval();
-        boolean dynamicRefreshSources = redisConfigService.isDynamicRefreshRedisSources();
-        boolean validateRedisClusterMembership = redisConfigService.isValidateRedisClusterMembership();
-        String redisPassword = redisConfigService.getRedisClusterPassword();
-        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(redisConfigService.getRedisClusterNodes());
-        if(!StringUtils.isEmpty(redisPassword)){
-            redisClusterConfiguration.setPassword(RedisPassword.of(redisPassword));
-        }
-        ClusterTopologyRefreshOptions clusterTopologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
-                .enablePeriodicRefresh(Duration.ofSeconds(refreshInterval))//Enable period refresh and set interval.
-                .dynamicRefreshSources(dynamicRefreshSources)//Refresh sources dynamicly.
-                .build();
-        ClientOptions clientOptions = ClusterClientOptions.builder()
-                .topologyRefreshOptions(clusterTopologyRefreshOptions)
-                .validateClusterNodeMembership(validateRedisClusterMembership)//Validate the availability of the nodes.
-                .build();
-        //Two kinds of clients, including jedis and lettuce.
-        LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder().clientOptions(clientOptions).build();
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisClusterConfiguration, lettuceClientConfiguration);
-        return lettuceConnectionFactory;
+//        int refreshInterval = redisConfigService.getRefreshInterval();
+//        boolean dynamicRefreshSources = redisConfigService.isDynamicRefreshRedisSources();
+//        boolean validateRedisClusterMembership = redisConfigService.isValidateRedisClusterMembership();
+//        String redisPassword = redisConfigService.getRedisClusterPassword();
+//        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(redisConfigService.getRedisClusterNodes());
+//        if(!StringUtils.isEmpty(redisPassword)){
+//            redisClusterConfiguration.setPassword(RedisPassword.of(redisPassword));
+//        }
+//        ClusterTopologyRefreshOptions clusterTopologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
+//                .enablePeriodicRefresh(Duration.ofSeconds(refreshInterval))//Enable period refresh and set interval.
+//                .dynamicRefreshSources(dynamicRefreshSources)//Refresh sources dynamicly.
+//                .build();
+//        ClientOptions clientOptions = ClusterClientOptions.builder()
+//                .topologyRefreshOptions(clusterTopologyRefreshOptions)
+//                .validateClusterNodeMembership(validateRedisClusterMembership)//Validate the availability of the nodes.
+//                .build();
+//        //Two kinds of clients, including jedis and lettuce.
+//        LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder().clientOptions(clientOptions).build();
+//        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisClusterConfiguration, lettuceClientConfiguration);
+//        return lettuceConnectionFactory;
+        return null;
     }
 }

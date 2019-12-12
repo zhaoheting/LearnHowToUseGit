@@ -20,17 +20,17 @@ public class RedisConfigService {
 
     private String RedisClusterPassword = "";
 
-    @Value("#{T(java.util.Arrays).asList('${spring.redis.cluster.nodes}')}")
-    private List<String> redisClusterNodes;
+//    @Value("#{T(java.util.Arrays).asList('${spring.redis.cluster.nodes}')}")
+//    private List<String> redisClusterNodes;
 
     /**
      * Get redis cluster nodes.
      *
      * @return The value of redis cluster nodes.
      */
-    public List<String> getRedisClusterNodes() {
-        return Collections.unmodifiableList(redisClusterNodes);
-    }
+//    public List<String> getRedisClusterNodes() {
+//        return Collections.unmodifiableList(redisClusterNodes);
+//    }
 
     public int getRefreshInterval() {
         return redisRefreshInterval;
