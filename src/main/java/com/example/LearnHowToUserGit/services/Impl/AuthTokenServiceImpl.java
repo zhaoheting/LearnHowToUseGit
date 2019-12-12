@@ -20,13 +20,15 @@ public class AuthTokenServiceImpl {
     }
 
     public String createToken(Claims claims) {
-        claims.put("createdTime", System.currentTimeMillis());
+        long currentTime = System.currentTimeMillis();
+        claims.put("createdTime", currentTime);
         int timetoLive = configService.getTimeToLive();
         String secret = "UTF-8";//不知道是什么用
         return Jwts.builder()
                 .setClaims(claims)
-                .signWith(SIGNATURE_ALGORITHM, TextCodec.BASE64.encode(secret))
-                .setExpiration(new Date(System.currentTimeMillis() + timetoLive))
-                .compact();
+                .setIssuedAt(new Date(currentTime))//jwt的签发时间
+                .signWith(SIGNATURE_ALGORITHM, TextCodec.BASE64.encode(secret))////设置签名使用的签名算法和签名使用的秘钥
+                .setExpiration(new Date(System.currentTimeMillis() + timetoLive))////设置过期时间
+                .compact();////就开始压缩为xxxxxxxxxxxxxx.xxxxxxxxxxxxxxx.xxxxxxxxxxxxx这样的jwt
     }
 }

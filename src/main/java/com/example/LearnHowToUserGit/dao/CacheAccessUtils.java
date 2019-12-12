@@ -15,4 +15,8 @@ public interface CacheAccessUtils {
     Boolean hasKey(String key);
 
     void del(String... keys);
+
+    Object get(String key);
+
+    boolean set(String key, Object value);
 }

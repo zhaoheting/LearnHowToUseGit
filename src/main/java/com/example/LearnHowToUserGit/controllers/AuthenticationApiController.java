@@ -18,11 +18,11 @@ public class AuthenticationApiController {
     @Autowired
     LoginService loginService;
 
-    @Autowired
-    private HttpServletRequest request;
+//    @Autowired
+//    private HttpServletRequest request;
 
     @RequestMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody Login login) {
+    public ResponseEntity<TokenResponse> login(HttpServletRequest request, @RequestBody Login login) {
         return loginService.login(request, login);
     }
 }

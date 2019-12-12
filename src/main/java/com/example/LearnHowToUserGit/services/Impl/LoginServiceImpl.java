@@ -1,12 +1,15 @@
 package com.example.LearnHowToUserGit.services.Impl;
 
 import com.example.LearnHowToUserGit.beans.ZhtClaims;
+import com.example.LearnHowToUserGit.dao.CacheAccessUtils;
 import com.example.LearnHowToUserGit.dao.CacheAccessUtilsRedisImpl;
 import com.example.LearnHowToUserGit.entity.User;
 import com.example.LearnHowToUserGit.model.Login;
 import com.example.LearnHowToUserGit.model.TokenResponse;
 import com.example.LearnHowToUserGit.services.LoginService;
 import com.example.LearnHowToUserGit.services.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,7 @@ public class LoginServiceImpl implements LoginService {
 
     UserService userService;
     AuthTokenServiceImpl authTokenService;
-    CacheAccessUtilsRedisImpl cacheAccessUtilsRedis;
+    CacheAccessUtils cacheAccessUtilsRedis;
 
     public LoginServiceImpl(UserService userService, AuthTokenServiceImpl authTokenService
             , CacheAccessUtilsRedisImpl cacheAccessUtilsRedis) {
@@ -44,7 +47,7 @@ public class LoginServiceImpl implements LoginService {
         String token = authTokenService.createToken(claims);
         tokenResponse.setToken(token);
         cacheAccessUtilsRedis.set("userToken", token);
-        cacheAccessUtilsRedis.set(user.getUserName(),user);
+        cacheAccessUtilsRedis.set(user.getUserName(), user);
         return tokenResponse;
     }
 }
