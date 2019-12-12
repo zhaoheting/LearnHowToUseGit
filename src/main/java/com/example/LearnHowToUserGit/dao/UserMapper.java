@@ -9,7 +9,7 @@ public interface UserMapper {
     @Insert("insert into t_user (nick_name,user_name,user_pwd,create_date,update_date) values (#{nickName},#{userName},#{userPwd},#{createDate},#{updateDate})")
     User insert(User user);
 
-    @Select("select * from t_user where user_name = #{userName} and user_pwd = #{userPwd}")
+    @Select("select * from t_user where user_name = #{username} and user_pwd = #{password}")
     @Results({
             @Result(property = "userId", column = "user_Id"),
             @Result(property = "nickName", column = "nick_name"),
@@ -19,6 +19,6 @@ public interface UserMapper {
             @Result(property = "createDate", column = "create_date"),
             @Result(property = "updateDate", column = "update_date")
     })
-    User queryByNameAndPwd(String userName, String password);
+    User queryByNameAndPwd(String username, String password);
 }
 
