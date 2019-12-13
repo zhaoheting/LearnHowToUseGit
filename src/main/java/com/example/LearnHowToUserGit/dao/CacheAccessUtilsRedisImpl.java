@@ -56,7 +56,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      * @param key
      * @return
      */
-    public Boolean hasKey(String key) {
+    public Boolean containKey(String key) {
         return cacheConfiguration.getRedisTemplate().hasKey(key);
     }
 

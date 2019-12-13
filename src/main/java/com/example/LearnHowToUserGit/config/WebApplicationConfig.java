@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebApplicationConfig implements WebMvcConfigurer {
 
-    public static final String[] excludePatterns = {"/login", ""};
+    public static final String[] excludePatterns = {"/login"};
     protected final AuthenticationInterceptor authenticationInterceptor;
 
     public WebApplicationConfig(AuthenticationInterceptor authenticationInterceptor) {

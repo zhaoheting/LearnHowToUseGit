@@ -1,5 +1,7 @@
 package com.example.LearnHowToUserGit.beans;
 
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.impl.DefaultClaims;
 
 import java.util.Map;
@@ -7,6 +9,7 @@ import java.util.Map;
 public class ZhtClaims extends DefaultClaims {
 
     private static final String USERNAME = "username";
+    private static final String IDKEY = "IDKey";
 
     /**
      * Default constructor.
@@ -30,6 +33,15 @@ public class ZhtClaims extends DefaultClaims {
 
     public ZhtClaims setUsername(String username) {
         setValue(USERNAME, username);
+        return this;
+    }
+
+    public String getIdKey() {
+        return getString(IDKEY);
+    }
+
+    public ZhtClaims setIdKey(String idKey) {
+        setValue(IDKEY, idKey);
         return this;
     }
 }

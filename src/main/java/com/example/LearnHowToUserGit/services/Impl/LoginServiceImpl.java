@@ -2,19 +2,18 @@ package com.example.LearnHowToUserGit.services.Impl;
 
 import com.example.LearnHowToUserGit.beans.ZhtClaims;
 import com.example.LearnHowToUserGit.dao.CacheAccessUtils;
-import com.example.LearnHowToUserGit.dao.CacheAccessUtilsRedisImpl;
 import com.example.LearnHowToUserGit.entity.User;
 import com.example.LearnHowToUserGit.model.Login;
 import com.example.LearnHowToUserGit.model.TokenResponse;
 import com.example.LearnHowToUserGit.services.LoginService;
 import com.example.LearnHowToUserGit.services.UserService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.impl.DefaultClaims;
+import com.example.LearnHowToUserGit.services.utils.KeyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -22,12 +21,13 @@ public class LoginServiceImpl implements LoginService {
     UserService userService;
     AuthTokenServiceImpl authTokenService;
     CacheAccessUtils cacheAccessUtilsRedis;
+    KeyService cacheKeyService;
 
-    public LoginServiceImpl(UserService userService, AuthTokenServiceImpl authTokenService
-            , CacheAccessUtilsRedisImpl cacheAccessUtilsRedis) {
+    public LoginServiceImpl(UserService userService, AuthTokenServiceImpl authTokenService, CacheAccessUtils cacheAccessUtilsRedis, KeyService cacheKeyService) {
         this.userService = userService;
         this.authTokenService = authTokenService;
         this.cacheAccessUtilsRedis = cacheAccessUtilsRedis;
+        this.cacheKeyService = cacheKeyService;
     }
 
     @Override
@@ -44,10 +44,14 @@ public class LoginServiceImpl implements LoginService {
     public TokenResponse updateCacheProfile(User user) {
         TokenResponse tokenResponse = new TokenResponse();
         ZhtClaims claims = new ZhtClaims();
+        String uuid = UUID.randomUUID().toString();
+        claims.setIdKey(uuid);
+        String username = user.getUserName();
+        claims.setUsername(username);
         String token = authTokenService.createToken(claims);
         tokenResponse.setToken(token);
         cacheAccessUtilsRedis.set("userToken", token);
-        cacheAccessUtilsRedis.set(user.getUserName(), user);
+        cacheAccessUtilsRedis.set(cacheKeyService.generateUserKey(uuid,username), user);
         return tokenResponse;
     }
 }

@@ -12,7 +12,7 @@ public interface CacheAccessUtils {
 
     Long getExpire(String key);
 
-    Boolean hasKey(String key);
+    Boolean containKey(String key);
 
     void del(String... keys);
 
