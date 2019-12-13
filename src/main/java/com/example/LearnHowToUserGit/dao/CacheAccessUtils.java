@@ -19,4 +19,6 @@ public interface CacheAccessUtils {
     Object get(String key);
 
     boolean set(String key, Object value);
+
+    boolean set(String key, Object value,long timeToLive);
 }

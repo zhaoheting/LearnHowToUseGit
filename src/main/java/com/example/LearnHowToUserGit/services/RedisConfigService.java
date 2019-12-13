@@ -1,12 +1,7 @@
 package com.example.LearnHowToUserGit.services;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
 
 @Service
 @ConfigurationProperties(prefix = "spring.redis")
@@ -20,7 +15,13 @@ public class RedisConfigService {
 
     private String RedisClusterPassword = "";
 
-//    @Value("#{T(java.util.Arrays).asList('${spring.redis.cluster.nodes}')}")
+    private int timeToLive = 3600;
+
+    public int getTimeToLive() {
+        return timeToLive;
+    }
+
+    //    @Value("#{T(java.util.Arrays).asList('${spring.redis.cluster.nodes}')}")
 //    private List<String> redisClusterNodes;
 
     /**
@@ -31,7 +32,6 @@ public class RedisConfigService {
 //    public List<String> getRedisClusterNodes() {
 //        return Collections.unmodifiableList(redisClusterNodes);
 //    }
-
     public int getRefreshInterval() {
         return redisRefreshInterval;
     }

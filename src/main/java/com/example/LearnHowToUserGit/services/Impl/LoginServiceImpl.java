@@ -5,6 +5,7 @@ import com.example.LearnHowToUserGit.dao.CacheAccessUtils;
 import com.example.LearnHowToUserGit.entity.User;
 import com.example.LearnHowToUserGit.model.Login;
 import com.example.LearnHowToUserGit.model.TokenResponse;
+import com.example.LearnHowToUserGit.services.ConfigService;
 import com.example.LearnHowToUserGit.services.LoginService;
 import com.example.LearnHowToUserGit.services.UserService;
 import com.example.LearnHowToUserGit.services.utils.KeyService;
@@ -22,12 +23,16 @@ public class LoginServiceImpl implements LoginService {
     AuthTokenServiceImpl authTokenService;
     CacheAccessUtils cacheAccessUtilsRedis;
     KeyService cacheKeyService;
+    ConfigService configService;
 
-    public LoginServiceImpl(UserService userService, AuthTokenServiceImpl authTokenService, CacheAccessUtils cacheAccessUtilsRedis, KeyService cacheKeyService) {
+    public LoginServiceImpl(UserService userService, AuthTokenServiceImpl authTokenService,
+                            CacheAccessUtils cacheAccessUtilsRedis, KeyService cacheKeyService,
+                            ConfigService configService) {
         this.userService = userService;
         this.authTokenService = authTokenService;
         this.cacheAccessUtilsRedis = cacheAccessUtilsRedis;
         this.cacheKeyService = cacheKeyService;
+        this.configService = configService;
     }
 
     @Override
@@ -50,8 +55,7 @@ public class LoginServiceImpl implements LoginService {
         claims.setUsername(username);
         String token = authTokenService.createToken(claims);
         tokenResponse.setToken(token);
-        cacheAccessUtilsRedis.set("userToken", token);
-        cacheAccessUtilsRedis.set(cacheKeyService.generateUserKey(uuid,username), user);
+        cacheAccessUtilsRedis.set(cacheKeyService.generateUserKey(uuid, username), user, configService.getTimeToLive());
         return tokenResponse;
     }
 }
