@@ -1,6 +1,7 @@
-package com.example.LearnHowToUserGit.dao;
+package com.example.LearnHowToUserGit.dao.impl;
 
 import com.example.LearnHowToUserGit.config.CacheConfiguration;
+import com.example.LearnHowToUserGit.dao.CacheAccessUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -561,5 +562,17 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      */
     public Set getZsetByScore(String key, double startScore, double endScore) {
         return cacheConfiguration.getRedisTemplate().opsForZSet().rangeByScore(key, startScore, endScore);
+    }
+
+    /**
+     * 在key为{@code key}的zset中的，member为{@code memberName}的tuple的score上增加delta个单位。
+     *
+     * @param key
+     * @param memberName
+     * @param delta
+     * @return
+     */
+    public Double ZsetIncrement(String key, String memberName, double delta) {
+        return cacheConfiguration.getRedisTemplate().opsForZSet().incrementScore(key, memberName, delta);
     }
 }
