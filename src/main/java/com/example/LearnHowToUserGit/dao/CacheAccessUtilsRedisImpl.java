@@ -17,11 +17,12 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheAccessUtilsRedisImpl.class);
     private CacheConfiguration cacheConfiguration;
 
-    public CacheAccessUtilsRedisImpl(CacheConfiguration cacheConfiguration){
+    public CacheAccessUtilsRedisImpl(CacheConfiguration cacheConfiguration) {
         this.cacheConfiguration = cacheConfiguration;
     }
 
 // =============================common============================
+
     /**
      * Set expiration time by key.
      *
@@ -76,6 +77,7 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
     }
 
     // ============================String=============================
+
     /**
      * Get a value by the given key in string.
      *
@@ -501,5 +503,63 @@ public class CacheAccessUtilsRedisImpl implements CacheAccessUtils {
      */
     public Long lRemove(String key, long count, Object value) {
         return cacheConfiguration.getRedisTemplate().opsForList().remove(key, count, value);
+    }
+
+    //===============================Zset===============================
+
+    /**
+     * Add a member-score to a zset.
+     *
+     * @param key
+     * @param score
+     * @param member
+     * @return
+     */
+    public boolean addToZset(String key, float score, String member) {
+        return cacheConfiguration.getRedisTemplate().opsForZSet().add(key, member, score);
+    }
+
+    /**
+     * Get all elementds of a zset.
+     *
+     * @param key
+     * @return
+     */
+    public Set getAllZset(String key) {
+        return cacheConfiguration.getRedisTemplate().opsForZSet().range(key, 0, -1);
+    }
+
+    /**
+     * Get all tuples of a zset.
+     *
+     * @param key
+     * @return
+     */
+    public Set getAllZsetWithScore(String key) {
+        return cacheConfiguration.getRedisTemplate().opsForZSet().rangeWithScores(key, 0, -1);
+    }
+
+    /**
+     * Get set of tuples where score is between {@code startScore} and {@code endScore}.
+     *
+     * @param key
+     * @param startScore
+     * @param endScore
+     * @return
+     */
+    public Set getZsetByScoreWithScore(String key, double startScore, double endScore) {
+        return cacheConfiguration.getRedisTemplate().opsForZSet().rangeByScoreWithScores(key, startScore, endScore);
+    }
+
+    /**
+     * Get elements of a zset where score is between {@code startScore} and {@code endScore}.
+     *
+     * @param key
+     * @param startScore
+     * @param endScore
+     * @return
+     */
+    public Set getZsetByScore(String key, double startScore, double endScore) {
+        return cacheConfiguration.getRedisTemplate().opsForZSet().rangeByScore(key, startScore, endScore);
     }
 }
